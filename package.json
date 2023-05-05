@@ -1,0 +1,10 @@
+{
+    "name": "aws-test-code",
+    "version": "1.0",
+    "author": "Kyler Loucks",
+    "license": "MIT-0",
+    "dependencies": {
+        "aws-sdk": "^2.962.0",
+        "fluent-ffmpeg": "^2.1.2"
+    }
+}
