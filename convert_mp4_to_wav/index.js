@@ -51,16 +51,18 @@ async function getObjects(bucketName, prefix) {
             // objects.push(secondMostRecentAudioFilePath)
         }
         const objects = sortedObjects.map((obj) => obj.Key)
-        return objects;
+        return objects[0];
 
 
         
     }
 }
 
-async function convertMp4ToWav(fromBucket, filePath) {
+async function convertMp4ToWav(fromBucket, mp4FilePath) {
     const toBucket = 'voiceconnectoraudio-cd12ad00';
-    const wavFilePath = 'captures/1cbb9a14-ea1d-49ce-ac28-a3704f720706/audio/2023-05-05-17-58-08-442.wav';
+
+    // replace .mp4 suffix with .wav
+    const wavFilePath = mp4FilePath.replace(".mp4", ".wav")
 
     const readStream = s3.getObject({ Bucket: fromBucket, Key: mp4FilePath }).createReadStream();
     
