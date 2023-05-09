@@ -12,7 +12,7 @@ const meetingId = '1cbb9a14-ea1d-49ce-ac28-a3704f720706';
 const prefix = `captures/${meetingId}/audio/`
 
 
-  
+
   
 async function getObjects(bucketName, prefix) {
     const data = await new Promise((resolve, reject) => {
@@ -62,7 +62,7 @@ async function convertMp4ToWav(fromBucket, mp4FilePath) {
     const toBucket = 'voiceconnectoraudio-cd12ad00';
 
     // replace .mp4 suffix with .wav
-    const wavFilePath = mp4FilePath.replace(".mp4", ".wav")
+    const wavUploadFilePath = mp4FilePath.replace(".mp4", ".wav")
 
     const readStream = s3.getObject({ Bucket: fromBucket, Key: mp4FilePath }).createReadStream();
     
@@ -82,7 +82,7 @@ async function convertMp4ToWav(fromBucket, mp4FilePath) {
         console.info('Process complete');
         s3.upload({
         Bucket: toBucket,
-        Key: wavFilePath,
+        Key: wavUploadFilePath,
         Body: passThrough,
         ContentType: 'audio/wav'
         }, (err, data) => {
