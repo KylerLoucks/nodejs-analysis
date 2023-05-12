@@ -1,0 +1,21 @@
+{
+  "name": "deepgram-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@deepgram/sdk": "^1.21.0",
+    "@socket.io/redis-adapter": "^8.2.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "redis": "^4.6.6",
+    "socket.io": "^4.6.1",
+    "ws": "^8.13.0"
+  }
+}
