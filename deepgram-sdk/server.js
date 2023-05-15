@@ -2,7 +2,7 @@
 
 const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/redis-adapter");
-const { createClient } = require("redis");
+const redis = require("redis");
 
 
 require('dotenv').config();
@@ -14,8 +14,10 @@ const { Deepgram } = require('@deepgram/sdk')
 const io = new Server({cors: {origin: "*"}});
 
 // Redis pub/sub
-const pubClient = createClient({ url: "redis://localhost:6379" });
+const pubClient = redis.createClient({url: "redis://localhost:6379"});
 const subClient = pubClient.duplicate();
+
+
 
 // adapter allows Socket.IO to utilize Redis for broadcasting messages and handling scalability across multiple server instances.
 io.adapter(createAdapter(pubClient, subClient));
@@ -24,9 +26,27 @@ io.listen(3001);
 console.log("websocket listening on port 3001")
 
 
+// establish connection to redis
+pubClient.connect()
+
+// handle redis connection errors
+pubClient.on('error', (err) => {
+    console.log('Error occured while connecting or accessing redis server');
+});
+
+
 // Connection is established between client and server:
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
     console.log(`A user connected to the Websocket!! ${socket.id}`)
+
+
+    await pubClient.set(`socket:1234`, JSON.stringify({testId: "test123"}, redis.print)).catch(err =>
+        console.log("Error setting data in redis: ", err)
+    );
+
+    const redisData = await pubClient.get(`socket:1234`, redis.print)
+
+    console.log(`got data from redis: ${redisData}`)
 
     const deepgram = new Deepgram(process.env.DG_KEY)
     const deepgramLive = deepgram.transcription.live({ 
@@ -56,7 +76,7 @@ io.on("connection", (socket) => {
 
     // Listen for audio stream
     socket.on("audiostream", (event) => {
-        console.log("event recieved", event)
+        // console.log("event recieved", event)
         // check if connection is established with deepgram
         if (deepgramLive.getReadyState() == 1) {
             deepgramLive.send(event.data)
@@ -68,10 +88,14 @@ io.on("connection", (socket) => {
         translate()
     })
 
+    // handle when users disconnect
+    socket.on("disconnect", (reason) => {
+        console.log("Client disconnected!", reason)
 
+        
+    });
 
 });
-
 
 async function translate(source, target, text) {
     const url = 'https://dev-api.itranslate.com/translation/v2/'
