@@ -40,13 +40,23 @@ io.on("connection", async (socket) => {
     console.log(`A user connected to the Websocket!! ${socket.id}`)
 
 
-    await pubClient.set(`socket:1234`, JSON.stringify({testId: "test123"}, redis.print)).catch(err =>
+    // TODO: put in io.on("join-meeting")
+    const response = await pubClient.get(`meetingId`).catch((err) => {
+        console.log("Error getting data in redis: ", err)
+    });
+
+    const data = JSON.parse(response || "{}");
+    data.users = data.users || [];
+    data.users.push({ cognitoUser: 'test', languagePref: "en" })
+
+
+    const updatedData = JSON.stringify(data)
+    console.log(updatedData)
+
+    // update redis data
+    await pubClient.set(`meetingId`, JSON.stringify(updatedData)).catch(err =>
         console.log("Error setting data in redis: ", err)
     );
-
-    const redisData = await pubClient.get(`socket:1234`, redis.print)
-
-    console.log(`got data from redis: ${redisData}`)
 
     const deepgram = new Deepgram(process.env.DG_KEY)
     const deepgramLive = deepgram.transcription.live({ 
