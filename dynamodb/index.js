@@ -1,7 +1,8 @@
-// AWS SDK v3:
-const { DynamoDB } = require("@aws-sdk/client-dynamodb")
-const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb"); // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html
-require('dotenv').config();
+// ES6 AWS SDK v3:
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb"; // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_util_dynamodb.html
+import { config } from "dotenv";
+config()
 const ddb = new DynamoDB({apiVersion: '2012-08-10'})
 
 
