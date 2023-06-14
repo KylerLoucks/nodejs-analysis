@@ -1,4 +1,4 @@
-const countTime = 66;
+const countTime = 5;
 const countDate = new Date().getTime() + (countTime + 1) * 1000;
 console.log(countDate)
 let timerId;
